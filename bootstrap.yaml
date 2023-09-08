@@ -1,0 +1,18 @@
+- hosts: all
+  tasks:
+    - file:
+        path: ./.ssh
+        state: directory 
+    - openssh_keypair:
+        path: ./.ssh/id_rsa
+    - authorized_key:
+        user: blogan
+        state: present
+        key: "{{ lookup('file', './.ssh/id_rsa.pub') }}"  
+    - community.general.sudoers:
+        name: blogan
+        state: present
+        user: blogan
+        commands: ALL
+        nopassword: true
+      become: true
